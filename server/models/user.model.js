@@ -1,5 +1,5 @@
 import {Schema,model} from "mongoose"
-import bcrypt, { genSalt } from "bcrypt"
+import bcrypt from "bcryptjs";
 
 const userSchema=new Schema({
     username:{
@@ -24,26 +24,20 @@ const userSchema=new Schema({
         default:false
     }
 })
-
-userSchema.pre("save", async function(next){
-    // console.log(this)
-  
-const user=this
-if(!user.isModified("password")){
-return next()
-}
-try {
-
-const saltRound=await bcrypt.genSalt(10)
-const hashPassword=await bcrypt.hash(user.password,saltRound)  
-user.password=hashPassword
-
-} catch (error) {
-    next(error)
-}
-});
-
+//hashPassword Middleware
+userSchema.pre("save",async function(next){
+    const user=this
+    if(!user.isModified("password")){
+        return next()
+    }
+    try {
+        const saltRound=await bcrypt.genSalt(10)
+        const hashPassword=await bcrypt.hash(user.password,saltRound)
+        user.password=hashPassword
+    } catch (error) {
+        next(error)
+    }
+})
 
 const User=model("user",userSchema)
-
 export default User

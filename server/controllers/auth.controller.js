@@ -25,7 +25,7 @@ const register=async(req,res)=>{
             phone
         })
         
-        return res.status(201).json({message:"User Created Successfully",data:user})
+        return res.status(201).json({message:"Register Successfully"})
 
     } catch (error) {
 
