@@ -1,5 +1,6 @@
 import {Schema,model} from "mongoose"
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken"
 
 const userSchema=new Schema({
     username:{
@@ -38,6 +39,29 @@ userSchema.pre("save",async function(next){
         next(error)
     }
 })
+//generate Token
+userSchema.methods.generateToken=function(){
+try {
+    return jwt.sign({
+        userId:this._id.toString(),
+        email:this.email,
+        isAdmin:this.isAdmin
+    },
+    process.env.JWT_SECRET_KEY,
+    {expiresIn:"30d"}
+)
+} catch (error) {
+   
+}
+}
+//compare password
+userSchema.methods.comparePassword=async function(password){
+    try {
+      return bcrypt.compare(password,this.password)  
+    } catch (error) {
+         console.error(error)
+    }
+}
 
 const User=model("user",userSchema)
 export default User
