@@ -51,7 +51,7 @@ try {
     {expiresIn:"30d"}
 )
 } catch (error) {
-   
+    console.log(error)
 }
 }
 //compare password
@@ -59,7 +59,7 @@ userSchema.methods.comparePassword=async function(password){
     try {
       return bcrypt.compare(password,this.password)  
     } catch (error) {
-         console.error(error)
+         console.log(error)
     }
 }
 

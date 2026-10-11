@@ -31,23 +31,17 @@ const register=async(req,res,next)=>{
     }
 }
 //login
-const login=async(req,res)=>{
+const login=async(req,res,next)=>{
   try {
      const {email,password}=req.body
-
-   if(!email || !password ){
-    return res
-    .status(400)
-    .json({message:"All Fields Are Required"})
-   } 
-
-   const userExists=await User.findOne({email})
-   
-   if(!userExists){
+     
+     const userExists=await User.findOne({email})
+     
+     if(!userExists){
     return res
     .status(401)
     .json({message:"Invalid Email Or Password"})
-   }
+}
 
    const isPasswordCorrect=await userExists.comparePassword(password)
    if(isPasswordCorrect){
@@ -60,10 +54,11 @@ const login=async(req,res)=>{
    }else{
      return res
     .status(401)
-    .json({message:"Inavlid Email Or Password"})
+    .json({message:"Invalid Email Or Password"})
    }
+
 } catch (error) {
-    return res.status(500).json({message:error.message}) 
+    next(error)
 }
 }
 const authController={
