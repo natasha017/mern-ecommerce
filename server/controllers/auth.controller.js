@@ -1,23 +1,16 @@
 import User from "../models/user.model.js"
 //  Register
-const register=async(req,res)=>{
+const register=async(req,res,next)=>{
     try {
         const {username,email,password,phone}=req.body
-        
-        if(!username || !email || !password || !phone){
-            return res
-            .status(400)
-            .json({message:"All Fields Are Required"})
-        }
-        
         const userExists=await User.findOne({email})
         
         if(userExists){
         return res
-        .status(400)
+        .status(409)
         .json({message:"Email Already Exists"})
-        
     }
+    
     const user=await User.create({
             username,
             email,
@@ -34,9 +27,10 @@ const register=async(req,res)=>{
         });
 
     } catch (error) {
-        return res.status(500).json({message:error.message})
+    next(error)
     }
 }
+//login
 const login=async(req,res)=>{
   try {
      const {email,password}=req.body
@@ -55,8 +49,8 @@ const login=async(req,res)=>{
     .json({message:"Invalid Email Or Password"})
    }
 
-   const user=await userExists.comparePassword(password)
-   if(user){
+   const isPasswordCorrect=await userExists.comparePassword(password)
+   if(isPasswordCorrect){
     return res
    .status(200)
    .json({
