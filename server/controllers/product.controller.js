@@ -23,7 +23,7 @@ const createProduct=async(req,res,next)=>{
         )
         stream.end(file.buffer)
     })
-const image = {
+vconst image = {
   id: result.public_id,
   url: result.secure_url
 };
