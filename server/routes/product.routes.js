@@ -1,7 +1,8 @@
 import { Router } from "express";
 import productController from "../controllers/product.controller.js";
-const router=Router()
+import upload from "../middlewares/multer.middleware.js";
 
-router.route("/").post(productController.createProduct);
+const router=Router()
+router.route("/").post(upload.single("image"),productController.createProduct);
 export default router
     
