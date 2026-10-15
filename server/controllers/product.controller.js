@@ -1,4 +1,3 @@
-import { promise } from "zod";
 import Product from "../models/product.model.js";
 import { v2 as cloudinary } from "cloudinary";
 
@@ -23,21 +22,43 @@ const createProduct=async(req,res,next)=>{
         )
         stream.end(file.buffer)
     })
-vconst image = {
+
+const image = {
   id: result.public_id,
   url: result.secure_url
 };
+
 const newProduct=await Product.create({name, description, price, category, stock, image});
     return res
     .status(201)
     .json({message:"Product Created Successfully"});
-
-} catch (error) {
-        next(error)
+    } catch (error) {
+      next(error)  
     }
-};
+}
+
+const getAllProducts=async(req,res,next)=>{
+   try {
+    const {page,limit}=req.query
+    
+    const skip=(page-1)*limit
+
+    const products=await Product.find({}).skip(skip).limit(limit)
+    const totalProducts=await Product.countDocuments()
+
+    return res.status(200).json({
+        totalPage:Math.ceil(totalProducts/limit),
+        currentPage:page,
+        count:products.length,
+        products  
+    })
+} catch (error) {
+    next(error)
+   }
+}
 
 const productController={
-    createProduct
+    createProduct,
+    getAllProducts
 };
 export default productController
