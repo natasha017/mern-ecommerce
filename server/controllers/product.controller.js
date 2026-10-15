@@ -39,15 +39,33 @@ const newProduct=await Product.create({name, description, price, category, stock
 
 const getAllProducts=async(req,res,next)=>{
    try {
-    const {page,limit}=req.query
+    const {page=1,limit=4,category,search}=req.query
+    
+    const filter={}
+
+    if(search){
+        filter.$or=[
+          {name:{$regex:search,$options:"i"}},
+          {description:{$regex:search,$options:"i"}}  
+        ]
+    }
+
+    if(category){
+        filter.category=category
+    }
     
     const skip=(page-1)*limit
 
-    const products=await Product.find({}).skip(skip).limit(limit)
-    const totalProducts=await Product.countDocuments()
+    const products=await Product
+    .find(filter)
+    .skip(skip)
+    .limit(limit)
+    const totalProducts=await Product.countDocuments(filter)
 
-    return res.status(200).json({
-        totalPage:Math.ceil(totalProducts/limit),
+    return res
+    .status(200)
+    .json({
+        totalPages:Math.ceil(totalProducts/limit),
         currentPage:page,
         count:products.length,
         products  
