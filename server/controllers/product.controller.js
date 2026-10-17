@@ -39,7 +39,7 @@ const newProduct=await Product.create({name, description, price, category, stock
 
 const getAllProducts=async(req,res,next)=>{
    try {
-    const {page=1,limit=4,category,search}=req.query
+    const {page=1,limit=4,category,search,sort}=req.query
     
     const filter={}
 
@@ -55,9 +55,19 @@ const getAllProducts=async(req,res,next)=>{
     }
     
     const skip=(page-1)*limit
+    const sortQuery={}
+
+    if(sort==="price-low-high"){
+        sortQuery.price=1
+    }else if(sort === "price-high-low"){
+        sortQuery.price=-1
+    }else if(sort === "newest"){
+       sortQuery.createdAt=-1 
+    }
 
     const products=await Product
     .find(filter)
+    .sort(sortQuery)
     .skip(skip)
     .limit(limit)
     const totalProducts=await Product.countDocuments(filter)

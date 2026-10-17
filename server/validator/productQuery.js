@@ -22,6 +22,13 @@ const productQuerySchema=z.object({
    .trim()
    .min(2, "Category name is too short")
    .optional(),
+   search: z
+    .string()
+    .trim()
+    .optional(),
+    sort: z
+    .enum(["price-low-high", "price-high-low", "newest"])
+    .optional()
 });
 
 export default productQuerySchema
