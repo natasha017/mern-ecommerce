@@ -55,19 +55,19 @@ const getAllProducts=async(req,res,next)=>{
     }
     
     const skip=(page-1)*limit
-    const sortQuery={}
+
+    let  productQuery=Product.find(filter)
 
     if(sort==="price-low-high"){
-        sortQuery.price=1
-    }else if(sort === "price-high-low"){
-        sortQuery.price=-1
-    }else if(sort === "newest"){
-       sortQuery.createdAt=-1 
+        productQuery=productQuery.sort({price:1})
+    }else if(sort==="price-high-low"){
+        productQuery=productQuery.sort({price:-1})
+    }else if(sort==="newest"){
+        productQuery=productQuery.sort({createdAt:-1})
     }
 
-    const products=await Product
-    .find(filter)
-    .sort(sortQuery)
+
+   const products=await productQuery
     .skip(skip)
     .limit(limit)
     const totalProducts=await Product.countDocuments(filter)

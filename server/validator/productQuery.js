@@ -27,7 +27,7 @@ const productQuerySchema=z.object({
     .trim()
     .optional(),
     sort: z
-    .enum(["price-low-high", "price-high-low", "newest"])
+    .enum(["price-low-high", "price-high-low","newest"])
     .optional()
 });
 
