@@ -11,7 +11,13 @@ router
 .route("/")
 .post(upload.single("image"),validate(productSchema),productController.createProduct);
 
-router.route("/").get(validateQuery(productQuerySchema),productController.getAllProducts)
+router
+.route("/")
+.get(validateQuery(productQuerySchema),productController.getAllProducts)
 
+router
+.route("/:id")
+.get(productController.getSingleProduct)
+.patch(productController.updateProduct)
 export default router
     

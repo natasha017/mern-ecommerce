@@ -85,8 +85,30 @@ const getAllProducts=async(req,res,next)=>{
    }
 }
 
+const getSingleProduct=async(req,res,next)=>{
+  try {
+    const {id} =req.params
+    
+    const product=await Product.findById(id)
+
+    if(!product){
+        return res
+        .status(404)
+        .json({message:"Product Not Found"})
+    }
+    
+    return res.status(200).json({product:product})
+
+} catch (error) {
+    next(error)
+  }
+}
+
+
 const productController={
     createProduct,
-    getAllProducts
+    getAllProducts,
+    getSingleProduct,
+    updateProduct
 };
 export default productController
